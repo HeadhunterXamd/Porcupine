@@ -23,11 +23,14 @@ namespace PorcupineCS
 
     public class Porcupine
     {
+        #region constants 
+
         public PicoVoiceStatus Status { get; private set; }
         private const string LIBRARY_NAME = "libpv_porcupine";
         private IntPtr _libraryPointer;
         private static readonly string _extension = $"{GetExtension()}";
 
+        #endregion constants
         #region PINVOKE
 
         [DllImport(LIBRARY_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
@@ -73,14 +76,14 @@ namespace PorcupineCS
             float? sensitivity = null, IEnumerable<string> keywordFilePaths = null,
             IEnumerable<float> sensitivities = null)
         {
-            if(!File.Exists(LIBRARY_NAME + _extension))
+            if (!File.Exists(LIBRARY_NAME + _extension))
                 throw new Exception($"the {LIBRARY_NAME} cannot be found.\nThis should be in the same folder as this or on a known path.");
             if (keywordFilePath == null)
             {
-                if(keywordFilePaths == null)
+                if (keywordFilePaths == null)
                     throw new ArgumentNullException(nameof(keywordFilePaths));
 
-                if(sensitivities == null)
+                if (sensitivities == null)
                     throw new ArgumentNullException(nameof(sensitivities));
 
                 Status = pv_porcupine_multiple_keywords_init(modelFilePath, keywordFilePaths.Count(), keywordFilePaths.ToArray(), sensitivities.ToArray(), out _libraryPointer);
