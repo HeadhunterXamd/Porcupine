@@ -76,6 +76,10 @@ namespace PorcupineCS
             float? sensitivity = null, IEnumerable<string> keywordFilePaths = null,
             IEnumerable<float> sensitivities = null)
         {
+            if(modelFilePath.StartsWith(@"file:\")){
+                modelFilePath = modelFilePath.Substring(6);
+            }
+            Console.WriteLine($"[INFO]: modelFilePath = {modelFilePath}");
             if (!File.Exists(LIBRARY_NAME + _extension))
                 throw new Exception($"the {LIBRARY_NAME} cannot be found.\nThis should be in the same folder as this or on a known path.");
             if (keywordFilePath == null)

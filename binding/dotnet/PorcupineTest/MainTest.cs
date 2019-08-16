@@ -24,7 +24,7 @@ namespace PorcupineTest
             if (!File.Exists($"libpv_porcupine{GetExtension()}"))
                 File.Copy($"{GetAbsRootPath()}lib/{GetEnvironmentName()}/amd64/libpv_porcupine.dll", $"./libpv_porcupine{GetExtension()}");
 
-            if(!File.Exists("porcupine_params.pv"))
+            if (!File.Exists("porcupine_params.pv"))
                 File.Copy($"{GetAbsRootPath()}lib/common/porcupine_params.pv", "./porcupine_params.pv");
 
             if (!File.Exists("porcupine.wav"))
@@ -45,7 +45,7 @@ namespace PorcupineTest
                 paths.Add($"{GetAbsRootPath()}resources/keyword_files/{name}_{GetEnvironmentName()}.ppn".Replace("/", "\\"));
             }
             senses = new List<float>();
-            for (int i= 0; i < paths.Count; i++)
+            for (int i = 0; i < paths.Count; i++)
             {
                 senses.Add(0.5f);
             }
@@ -74,12 +74,12 @@ namespace PorcupineTest
                 int count = p.FrameLength();
                 List<short> frame = data.GetRange(start, count);
                 PicoVoiceStatus status = p.ProcessMultipleKeywords(frame.ToArray(), out int result);
-                if(result >= 0) 
+                if (result >= 0)
                     results.Add(result);
                 Assert.AreEqual(PicoVoiceStatus.SUCCESS, status, "The status is not as expected");
             }
 
-            var requiredRes = new[] {15, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18};
+            var requiredRes = new[] { 15, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 };
 
             Assert.AreEqual(requiredRes.Length, results.Count, $"expected results length are different expected {requiredRes.Length} got {results.Count}");
             for (var i = 0; i < results.Count; i++)
@@ -93,7 +93,7 @@ namespace PorcupineTest
         [TestMethod]
         public void TestProcess()
         {
-            Porcupine p = new Porcupine(Path.Combine(Environment.CurrentDirectory, "porcupine_params.pv"), keywordFilePath:$"{GetAbsRootPath()}resources/keyword_files/porcupine_{GetEnvironmentName()}.ppn", sensitivity:0.5f);
+            Porcupine p = new Porcupine("porcupine_params.pv", keywordFilePath: $"{GetAbsRootPath()}resources/keyword_files/porcupine_{GetEnvironmentName()}.ppn", sensitivity: 0.5f);
             Assert.AreEqual(PicoVoiceStatus.SUCCESS, p.Status, "the status of the creation of the recognition system has failed");
             WAVFile file = new WAVFile();
             file.Open("porcupine.wav", WAVFile.WAVFileMode.READ);
@@ -104,9 +104,9 @@ namespace PorcupineTest
                 data.Add(BitConverter.ToInt16(file.GetNextSample_ByteArray()));
             }
 
-            int framecount = (int) Math.Floor((decimal) (data.Count / p.FrameLength()));
+            int framecount = (int)Math.Floor((decimal)(data.Count / p.FrameLength()));
             var results = new List<bool>();
-            for (int i = 0; i < framecount;  i++)
+            for (int i = 0; i < framecount; i++)
             {
                 int start = i * p.FrameLength();
                 int count = p.FrameLength();
